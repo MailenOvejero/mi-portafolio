@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Currículum - Mailen</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <main class="main-content">
+
+    <section class="contenido">
+      <div class="seccion-box">
+
+        <!-- Tit centrado -->
+        <h2 class="seccion-titulo" style="text-align: center;">Mi Currículum</h2>
+
+        <!-- Botons debajo del título -->
+        <div class="cv-botones" style="text-align: center; margin-bottom: 20px;">
+          <a href="{{ url_for('index') }}" class="btn">Volver</a>
+          <a href="{{ url_for('static', filename='cv/mailen-cv.pdf') }}" download class="btn">Descargar CV</a>
+        </div>
+
+        <!-- Imag del CV -->
+        <div class="cv-container">
+          <img src="{{ url_for('static', filename='img/cv.png') }}" alt="CV de Mailen" class="cv-img">
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>

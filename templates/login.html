@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+ <div class="login-seccion">
+  <h2 class="login-titulo">Acceso al Panel</h2>
+  {% if error %}
+    <p class="login-error">{{ error }}</p>
+  {% endif %}
+  <form method="POST" class="login-formulario">
+    <input type="text" name="usuario" placeholder="Usuario" class="login-input" required>
+    <input type="password" name="contraseña" placeholder="Contraseña" class="login-input" required>
+    <button type="submit" class="login-boton">Ingresar</button>
+    <a href="{{ url_for('index') }}" class="admin-volver">← Volver al inicio</a>
+
+  </form>
+</div>
+ <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

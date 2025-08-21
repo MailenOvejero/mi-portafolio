@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="admin-seccion">
+    <!-- enkbezado -->
+    <div class="admin-header">
+      <h1 class="admin-titulo">Bienvenida Mailen</h1>
+      <a href="{{ url_for('logout') }}" class="admin-logout">Cerrar sesión</a>
+    </div>
+
+    <!-- Descripcioon -->
+    <p class="admin-descripcion">Mi panel privado para administrar mis proyectos 💋.</p>
+
+    <!-- FOTO DE PERFIL -->
+    <div class="perfil-container">
+      <h2 class="admin-subtitulo">Foto de Perfil</h2>
+      {% if perfil and perfil.imagen %}
+        <img src="{{ url_for('static', filename=perfil.imagen) }}" alt="Foto perfil" class="admin-img">
+        
+        <!-- botn eliminar -->
+        <form action="{{ url_for('eliminar_perfil') }}" method="POST">
+          <button type="submit" class="btn-eliminar">🗑 Eliminar Foto</button>
+        </form>
+      {% else %}
+        <p>No hay foto de perfil cargada</p>
+      {% endif %}
+
+      <!-- form subir -->
+      <form action="{{ url_for('editar_perfil') }}" method="POST" enctype="multipart/form-data" class="perfil-form">
+        <input type="file" name="imagen" accept="image/*" required>
+        <button type="submit">📤 Subir/Actualizar Foto</button>
+      </form>
+    </div>
+
+    <!-- formu para carga de proyectos -->
+    <form action="{{ url_for('agregar_proyecto') }}" method="POST" enctype="multipart/form-data" class="admin-formulario">
+      <input type="text" name="titulo" placeholder="Título del proyecto" class="admin-input" required>
+      <textarea name="descripcion" placeholder="Descripción" class="admin-textarea" required></textarea>
+      <input type="file" name="imagen" accept="image/*" class="admin-file" required>
+      <input type="text" name="link" placeholder="Link al proyecto (opcional)" class="admin-input">
+      <button type="submit" class="admin-boton">Agregar proyecto</button>
+    </form>
+
+    <!-- proyectos cargados x adminnn-->
+    <div class="admin-proyectos">
+      <h2 class="admin-subtitulo">Proyectos cargados</h2>
+      <div class="admin-grid">
+        {% for proyecto in proyectos %}
+        <div class="admin-card">
+          <img src="{{ url_for('static', filename=proyecto.imagen) }}" alt="{{ proyecto.titulo }}" class="admin-img">
+          <h3 class="admin-nombre">{{ proyecto.titulo }}</h3>
+          <p class="admin-descripcion-proyecto">{{ proyecto.descripcion }}</p>
+          {% if proyecto.link %}
+          <a href="{{ proyecto.link }}" target="_blank" class="admin-logout">Ver proyecto</a>
+          {% endif %}
+          <form action="{{ url_for('eliminar_proyecto', id=proyecto.id) }}" method="POST">
+            <button type="submit" class="admin-boton eliminar">🗑 Eliminar</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
