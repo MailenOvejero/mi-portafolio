@@ -1,8 +1,9 @@
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
-env_file = ".env.prod" if os.getenv("FLASK_ENV") == "production" else ".env.local"
-load_dotenv(env_file)
+# Solo carga el archivo .env si estás en entorno local
+if os.getenv("FLASK_ENV") != "production":
+    load_dotenv(".env.local")
 
 db_config = {
     'host': os.getenv('DB_HOST'),
