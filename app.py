@@ -163,18 +163,14 @@ def eliminar_proyecto(id):
 
     conn = psycopg2.connect(**db_config)
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
-
-    # busco la img para eliminrla del servidor
     cursor.execute("SELECT imagen FROM proyectos WHERE id = %s", (id,))
     resultado = cursor.fetchone()
     if resultado:
-        imagen = resultado[0]
+        imagen = resultado['imagen']
         ruta = os.path.join(app.root_path, 'static', imagen)
         if os.path.exists(ruta):
             os.remove(ruta)
 
-    # elimino el proyecto de la base
     cursor.execute("DELETE FROM proyectos WHERE id = %s", (id,))
     conn.commit()
     conn.close()
@@ -227,7 +223,6 @@ def editar_perfil():
     return redirect(url_for('admin'))
 
 
-
 # ===============================
 # Eliminar foto de perfil
 # ===============================
@@ -239,17 +234,17 @@ def eliminar_perfil():
     conn = psycopg2.connect(**db_config)
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-
     cursor.execute("SELECT imagen FROM perfil WHERE id = 1")
     actual = cursor.fetchone()
-    if actual and os.path.exists(os.path.join('static', actual[0])):
-        os.remove(os.path.join('static', actual[0]))
+    if actual and os.path.exists(os.path.join('static', actual['imagen'])):
+        os.remove(os.path.join('static', actual['imagen']))
 
     cursor.execute("UPDATE perfil SET imagen = '' WHERE id = 1")
     conn.commit()
     conn.close()
 
     return redirect(url_for('admin'))
+
 
 
 if __name__ == '__main__':
