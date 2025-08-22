@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-import mysql.connector
+import psycopg2
+import psycopg2.extras
 import bcrypt
 from werkzeug.utils import secure_filename
 import os
@@ -15,8 +16,9 @@ app.config['UPLOAD_FOLDER'] = 'static/img'
 # ===============================
 @app.route('/')
 def index():
-    conexion = mysql.connector.connect(**db_config)
-    cursor = conexion.cursor(dictionary=True)
+    conn = psycopg2.connect(**db_config)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
 
     # proyectoos
     cursor.execute("SELECT * FROM proyectos")
@@ -28,7 +30,7 @@ def index():
     cursor.execute("SELECT * FROM perfil LIMIT 1")
     perfil = cursor.fetchone()
 
-    conexion.close()
+    conn.close()
 
     return render_template('index.html', proyectos=proyectos, perfil=perfil)
 
@@ -42,8 +44,9 @@ def login():
         usuario = request.form['usuario']
         contraseña = request.form['contraseña']
 
-        conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor(dictionary=True)
+        conn = psycopg2.connect(**db_config)
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
         cursor.execute("SELECT * FROM usuarios WHERE usuario=%s", (usuario,))
         usuario_db = cursor.fetchone()
         conn.close()
@@ -72,8 +75,9 @@ def logout():
 @app.route('/admin')
 def admin():
     if 'usuario' in session:
-        conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor(dictionary=True)
+        conn = psycopg2.connect(**db_config)
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
 
         # proyects
         cursor.execute("SELECT * FROM proyectos")
@@ -104,8 +108,9 @@ def agregar_proyecto():
     imagen = request.files['imagen']
     link = request.form.get('link', '').strip()
 
-    conn = mysql.connector.connect(**db_config)
-    cursor = conn.cursor(dictionary=True)
+    conn = psycopg2.connect(**db_config)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
 
     # valido titulovacio
     if not titulo:
@@ -156,8 +161,9 @@ def eliminar_proyecto(id):
     if 'usuario' not in session:
         return redirect(url_for('login'))
 
-    conn = mysql.connector.connect(**db_config)
-    cursor = conn.cursor()
+    conn = psycopg2.connect(**db_config)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
 
     # busco la img para eliminrla del servidor
     cursor.execute("SELECT imagen FROM proyectos WHERE id = %s", (id,))
@@ -199,8 +205,9 @@ def editar_perfil():
         ruta = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         archivo.save(ruta)
 
-        conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor()
+        conn = psycopg2.connect(**db_config)
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
 
         # Buco la img actual
         cursor.execute("SELECT imagen FROM perfil LIMIT 1")
@@ -229,8 +236,9 @@ def eliminar_perfil():
     if 'usuario' not in session:
         return redirect(url_for('login'))
 
-    conn = mysql.connector.connect(**db_config)
-    cursor = conn.cursor()
+    conn = psycopg2.connect(**db_config)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
 
     cursor.execute("SELECT imagen FROM perfil WHERE id = 1")
     actual = cursor.fetchone()
