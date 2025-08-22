@@ -186,9 +186,6 @@ def cv():
     return render_template('cv.html')
 
 
-# ===============================
-# Subir/editar foto de perfil
-# ===============================
 @app.route('/editar_perfil', methods=['POST'])
 def editar_perfil():
     if 'imagen' not in request.files:
@@ -204,19 +201,15 @@ def editar_perfil():
         conn = psycopg2.connect(**db_config)
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-
-        # Buco la img actual
-        cursor.execute("SELECT imagen FROM perfil LIMIT 1")
+        cursor.execute("SELECT imagen FROM perfil WHERE id = 1")
         actual = cursor.fetchone()
 
-        # borro la img ant. solo si existe y no es string vacio
-        if actual and actual[0]:
-            ruta_vieja = os.path.join('static', actual[0])
+        if actual and actual['imagen']:
+            ruta_vieja = os.path.join('static', actual['imagen'])
             if os.path.exists(ruta_vieja):
                 os.remove(ruta_vieja)
 
-        # Guardar la nueva en la base
-        cursor.execute("UPDATE perfil SET imagen = %s", (f"img/{filename}",))
+        cursor.execute("UPDATE perfil SET imagen = %s WHERE id = 1", (f"img/{filename}",))
         conn.commit()
         conn.close()
 
